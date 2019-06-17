@@ -138,6 +138,7 @@ def mk_page_layout(pathname, **kwargs):
         children.extend(div_children_for(key, **specs))
 
     return html.Div(children)
+
     # if 'radio' in kwargs:
     #     key = 'radio'
     #     specs = kwargs.get(key, {})
@@ -182,7 +183,9 @@ def display_page(pathname):
         return page_2_layout
     elif pathname == '/special':
         specs = {
-            'radio': {'options': ['foo', 'bar', 'again'], 'id': 'radio', 'value': 'foo'}
+            'radio': {'options': ['foo', 'bar', 'again'],
+                      'id': 'radio',
+                      'value': 'foo'}
         }
         return mk_page_layout('blah blah', **specs)
     else:

@@ -1,33 +1,28 @@
+from otolite.skdash.controller import Controller, estimators
 # from sklearn.tree import DecisionTreeRegressor
 #
 # func = DecisionTreeRegressor
 
 # -*- coding: utf-8 -*-
-import os
 import dash
 import dash_core_components as dcc
-import dash_html_components as hc
-from dash.dependencies import Input, Output, State
-
-from otolite.skdash.util import extract_name_and_default, SignatureExtractor
-from py2dash.component_makers import div_list_from_func
-from py2dash.component_makers import dropdown_from_list
-
-from otolite.skdash.controller import Controller, estimators
-from otolite.skdash.controller import run_model
-
-from py2dash.util import Ids
+import dash_html_components as dhc
+from dash.dependencies import Input, Output
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-# app = dash.Dash(__name__)
-# app.css.append_css({'relative_package_path': 'bWLwgP.css'})
+from otolite.skdash.util import extract_name_and_default, SignatureExtractor
 
 extract_signature = SignatureExtractor(attrs=('name', 'default', 'annotation'))
 
 undefined = extract_name_and_default(dcc.Input)[0]['default']
+
+from py2dash.component_makers import div_list_from_func
+from py2dash.component_makers import dropdown_from_list
+
+from otolite.skdash.controller import run_model
 
 # func = LinearRegression
 # func = DecisionTreeRegressor
@@ -36,38 +31,52 @@ func = run_model
 div_list = div_list_from_func(func)
 if func == run_model:
     div_list.extend([
-        hc.Button(id='submit-button', n_clicks=0, children='Submit'),
-        hc.Div(id='output-state')])
+        dhc.Button(id='submit-button', n_clicks=0, children='Submit'),
+        dhc.Div(id='output-state')])
+
 
 # app.layout = html.Div(div_list, style={'columnCount': 2})
 
 
+class Ids:
+    def __init__(self, _attrs=()):
+        self._attrs = list(_attrs)
+
+    def __getattr__(self, _id):
+        if isinstance(_id, self.__class__):
+            _id = _id._id
+        assert isinstance(_id, str), "_id should be a string"
+        if _id not in self._attrs:
+            setattr(self, _id, _id)
+            self._attrs.append(_id)
+
+        return _id
+
+    def __dir__(self):  # to see attr in autocompletion
+        return self._attrs
+
+    def __iter__(self):
+        yield from self._attrs
+
+
 ids = Ids()
 
-app.layout = hc.Div([
-    hc.Div([
-        hc.Label('Learner Kind'),
+app.layout = dhc.Div([
+    dhc.Div([
+        dhc.Label('Learner Kind'),
         dropdown_from_list(Controller.list_learner_kinds(), id=ids.learner_kind)]),
-    hc.Div(id=ids.end_of_page)
+    dhc.Div([
+        dhc.Label('Result'),
+        dhc.Div(id=ids.result)])
 ])
 
 
 @app.callback(
-    Output(ids.end_of_page, 'children'),
+    Output(ids.result, 'children'),
     [Input(ids.learner_kind, 'value')]
 )
 def update_output_div(input_val):
-    div_list = div_list_from_func(dict(estimators)[input_val])
-    return div_list + [hc.P(), hc.Button(id='submit_button', n_clicks=0, children='Submit')]
-
-
-@app.callback(
-    Output(ids.end_of_page, 'children'),
-    [Input(ids.learner_kind, 'value')]
-)
-def submit_estimator_params(input_val):
-    div_list = div_list_from_func(dict(estimators)[input_val])
-    return div_list + [hc.P(), hc.Button(id=ids.submit_button, n_clicks=0, children='Submit')]
+    return div_list_from_func(dict(estimators)[input_val])
 
 
 def ensure_bool(x):
