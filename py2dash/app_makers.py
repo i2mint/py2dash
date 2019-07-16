@@ -18,16 +18,11 @@ def dispatch_funcs_to_app(app, funcs):
         dispatch_func_to_app(app, func)
 
 
-def dispatch_funcs(funcs):
+def dispatch_funcs_old(funcs):
     app = dash.Dash(
         __name__,
         external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css']
     )
-
-    url_bar_and_content_div = html.Div([
-        dcc.Location(id='url', refresh=False),
-        html.Div(id='page-content')
-    ])
 
     def page_of_func(func=None):
         if func is not None:
@@ -50,6 +45,10 @@ def dispatch_funcs(funcs):
         v.children.extend(cm.mk_navigation_links_div_list(cm.list_diff(pages, page),
                                                           link_str_for=lambda x: f"{x}-div"))
 
+    url_bar_and_content_div = html.Div([
+        dcc.Location(id='url', refresh=False),
+        html.Div(id='page-content')
+    ])
     layout_for_page['url_bar_and_content_div'] = url_bar_and_content_div
 
     def serve_layout():
@@ -69,3 +68,64 @@ def dispatch_funcs(funcs):
     dispatch_funcs_to_app(app, funcs)
 
     return app
+
+
+def capitalize_first_letter(s):
+    return s[0].upper() + s[1:].lower()
+
+
+def dispatch_funcs(funcs):
+    app = dash.Dash(
+        __name__,
+        external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css']
+    )
+
+    def url_for_func(func=None):
+        if func is not None:
+            return f"/{func.__name__}"
+        else:
+            return '/'
+
+    func_mint_for_url = dict()
+    div_for_url = dict()
+
+    div_for_url['/'] = html.Div(children=[], id='/-div')
+    func_mint_for_url['/'] = {'func_title_name': 'Home'}
+
+    for func in funcs:
+        func_mint = cm.dash_mint_for_func(func)
+        url = url_for_func(func)
+        div_for_url[url] = html.Div(func_mint['input_divs'] + [func_mint['output_div']],
+                                    id=func_mint['func_id'])
+        func_mint_for_url[url] = func_mint
+
+    urls = list(div_for_url.keys())
+    for url, v in div_for_url.items():
+        v.children.extend(cm.mk_navigation_links_div_list(
+            cm.list_diff(urls, url), link_str_for=lambda x: func_mint_for_url.get(x, {}).get('func_title_name')))
+
+    url_bar_and_content_div = html.Div([
+        dcc.Location(id='url', refresh=False),
+        html.Div(id='page-content')
+    ])
+    div_for_url['url_bar_and_content_div'] = url_bar_and_content_div
+
+    def serve_layout():
+        if flask.has_request_context():
+            return div_for_url['url_bar_and_content_div']
+        return html.Div(list(div_for_url.values()))
+
+    app.layout = serve_layout
+
+    dflt_div = div_for_url['/']
+
+    @app.callback(Output('page-content', 'children'),
+                  [Input('url', 'pathname')])
+    def display_page(pathname):
+        return div_for_url.get(pathname, dflt_div)
+
+    dispatch_funcs_to_app(app, funcs)
+
+    return app
+
+

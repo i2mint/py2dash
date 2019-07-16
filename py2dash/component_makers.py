@@ -174,16 +174,20 @@ def dash_mint_for_func(func):
     arg_specs = extract_signature(func)
     divs = list()
     input_callback_specs = list()
-    divs.append(hc.H3(func.__name__))
+    func_name = func.__name__
+    divs.append(hc.H3(func_name))
     for arg_spec in arg_specs:
-        arg_mint = dash_mint_for_arg(arg_spec, id_prefix=f"{func.__name__}")
+        arg_mint = dash_mint_for_arg(arg_spec, id_prefix=f"{func_name}")
         divs.extend(arg_mint['layout_divs'])
         input_callback_specs.append(arg_mint['input_callback_specs'])
-    func_id = f"{func.__name__}-div"
-    output_id = f"{func.__name__}-output"
+    func_id = f"{func_name}-div"
+    output_id = f"{func_name}-output"
+    func_title_name = func_name[0].upper() + func_name[1:].lower()
     output_div = hc.Div(id=output_id)
     output_callback_spec = {'component_id': output_id, 'component_property': 'children'}
-    return dict(func_id=func_id, input_divs=divs,
+    return dict(func_id=func_id,
+                func_title_name=func_title_name,
+                input_divs=divs,
                 input_callback_specs=input_callback_specs,
                 output_callback_spec=output_callback_spec,
                 output_div=output_div)
@@ -201,3 +205,7 @@ def dropdown_from_list(options_list, value=choose_first_element, **kwargs):
         kws['value'] = value
 
     return dcc.Dropdown(**kws)
+
+
+class FuncMint:
+    pass
