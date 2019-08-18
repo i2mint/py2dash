@@ -74,7 +74,7 @@ def capitalize_first_letter(s):
     return s[0].upper() + s[1:].lower()
 
 
-def dispatch_funcs(funcs):
+def dispatch_funcs(funcs, *args, **kwargs):
     app = dash.Dash(
         __name__,
         external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -127,5 +127,3 @@ def dispatch_funcs(funcs):
     dispatch_funcs_to_app(app, funcs)
 
     return app
-
-

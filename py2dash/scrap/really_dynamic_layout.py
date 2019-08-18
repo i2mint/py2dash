@@ -1,6 +1,3 @@
-from py2dash.app_makers import dispatch_funcs
-
-
 def foo(a: int = 0, b: int = 0, c=0):
     return (a * b) + c
 
@@ -16,5 +13,7 @@ def confuser(a: int = 0, x: float = 3.14):
 funcs = [foo, bar, confuser]
 
 if __name__ == '__main__':
+    from py2dash.app_makers import dispatch_funcs
+
     app = dispatch_funcs(funcs)
     app.run_server(debug=True)
