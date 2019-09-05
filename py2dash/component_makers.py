@@ -2,9 +2,8 @@ from dataclasses import dataclass
 
 import dash_core_components as dcc
 import dash_html_components as hc
-from dash.dependencies import Input, Output, State
 
-from otolite.skdash.util import extract_name_and_default, SignatureExtractor
+from py2dash.util import extract_name_and_default, SignatureExtractor
 
 extract_signature = SignatureExtractor(attrs=('name', 'default', 'annotation'))
 

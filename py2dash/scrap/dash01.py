@@ -15,7 +15,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-from otolite.skdash.util import extract_name_and_default, SignatureExtractor
+from py2dash.util import extract_name_and_default, SignatureExtractor
 
 extract_signature = SignatureExtractor(attrs=('name', 'default', 'annotation'))
 
