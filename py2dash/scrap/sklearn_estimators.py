@@ -20,7 +20,7 @@ def pickle_output(func):
     def wrapped(*args, **kwargs):
         obj = func(*args, **kwargs)
         pickle.dump(obj, open(save_filepath, 'wb'))
-        return f"{str(obj)}\nSaved here: {save_filepath}"
+        return f"{str(obj)} \n\nSaved here: {save_filepath}"
 
     return wrapped
 
@@ -40,3 +40,7 @@ if __name__ == '__main__':
     print("**********************************************************")
     app = dispatch_funcs(funcs)
     app.run_server(debug=True)
+
+# TODO: Add a help link for each function (using html.Label(['Text', html.A('link', href='/link-location')])
+# Example: https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html
+# So: https://scikit-learn.org/stable/modules/generated/{object_path}.html
