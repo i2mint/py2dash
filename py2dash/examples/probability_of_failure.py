@@ -1,4 +1,4 @@
-import numpy as np
+from math import log
 
 DFLT_UNIT_FAILURE_PROB = 0.01
 DFLT_ANY_FAILURE_PROB = 0.5
@@ -16,7 +16,7 @@ def unit_failure_prob_for(n_units=DFLT_N_UNITS, any_failure_prob=DFLT_ANY_FAILUR
 
 
 def n_units_for(any_failure_prob=DFLT_ANY_FAILURE_PROB, unit_failure_prob=DFLT_UNIT_FAILURE_PROB):
-    return np.log(1 - any_failure_prob) / np.log(1 - unit_failure_prob)
+    return log(1 - any_failure_prob) / log(1 - unit_failure_prob)
 
 
 funcs = [any_failure_prob_for, unit_failure_prob_for, n_units_for]
