@@ -126,11 +126,14 @@ def dispatch_funcs(funcs, configs=None, convention=None):
     print(configs)
 
     # make the app  (TODO: objectify or functionalize this kind of operation)
-    app = dash.Dash(**dict({'name': __name__}, **configs.get('dash.Dash', {})))
+    app_kwargs = dict({'name': __name__}, **configs.get('dash.Dash', {}))
+
+    print(app_kwargs)
+
+    app = dash.Dash(**app_kwargs)
     add_app_attrs(app, **configs.get('add_app_attrs', {}))
 
-    print(dict({'name': __name__}, **configs.get('dash.Dash', {})))
-    pprint(app.__dict__)
+    # pprint(app.__dict__)
 
     def url_for_func(func=None):
         if func is not None:
