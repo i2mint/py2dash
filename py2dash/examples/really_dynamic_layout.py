@@ -17,3 +17,17 @@ if __name__ == '__main__':
 
     app = dispatch_funcs(funcs)
     app.run_server(debug=True)
+
+    # But if you wanted to configure, or change the underlying convention, you could!
+
+    # configs = {
+    #     'dash.Dash': {
+    #         'name': "My Own Lil' name",
+    #     },
+    #     'add_app_attrs': {
+    #         'title': 'Lil'
+    #     }
+    # }
+    # convention = {}
+    # app = dispatch_funcs(funcs, configs, convention)
+    # app.run_server(debug=True)

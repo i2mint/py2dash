@@ -74,11 +74,63 @@ def capitalize_first_letter(s):
     return s[0].upper() + s[1:].lower()
 
 
-def dispatch_funcs(funcs, *args, **kwargs):
-    app = dash.Dash(
-        __name__,
-        external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css']
-    )
+# TODO: external_stylesheets doesn't work when doing this:
+# configs = {
+#     'dash.Dash': {
+#         'name': "My Own Lil' name",
+#     },
+#     'add_app_attrs': {
+#         'title': 'Lil'
+#     }
+# }
+# convention = {}
+# app = dispatch_funcs(funcs, configs, convention)
+# app.run_server(debug=True)
+dflt_convention = {
+    'dispatch_funcs': {
+        'dash.Dash': dict(external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
+    }
+}
+
+try:
+    from py2mint.chain_map import ChainMapTree
+except ImportError:
+    from warnings import warn
+
+    warn("You should really install https://github.com/i2mint/py2mint. Things won't work correctly if not")
+    from collections import ChainMap as ChainMapTree  # replacement, but not actually recursive
+
+
+#
+# class Configs:
+#     def __init__(self, namespace, configs=None, convention=None):
+#         convention = (convention or dflt_convention).get(namespace, {})
+#         self._chain_map = ChainMapTree((configs or {}), convention)
+
+
+def mk_configs(namespace, configs=None, convention=None):
+    convention = (convention or dflt_convention).get(namespace, {})
+    return ChainMapTree((configs or {}), convention).to_dict()
+
+
+def add_app_attrs(app, **kwargs):
+    for k, v in kwargs.items():
+        setattr(app, k, v)
+
+
+def dispatch_funcs(funcs, configs=None, convention=None):
+    from pprint import pprint
+    # make the configuration for this function call by merging configs and convention
+    configs = mk_configs('dispatch_funcs', configs=configs, convention=convention)
+
+    print(configs)
+
+    # make the app  (TODO: objectify or functionalize this kind of operation)
+    app = dash.Dash(**dict({'name': __name__}, **configs.get('dash.Dash', {})))
+    add_app_attrs(app, **configs.get('add_app_attrs', {}))
+
+    print(dict({'name': __name__}, **configs.get('dash.Dash', {})))
+    pprint(app.__dict__)
 
     def url_for_func(func=None):
         if func is not None:
