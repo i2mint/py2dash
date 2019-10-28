@@ -15,22 +15,28 @@ funcs = [foo, bar, confuser]
 if __name__ == '__main__':
     from py2dash.app_makers import dispatch_funcs
 
-    which_one = 'some_configs'
+    app = dispatch_funcs(funcs)
+    app.run_server(debug=True)
 
-    if which_one == 'simple':
-        app = dispatch_funcs(funcs)
-        app.run_server(debug=True)
-    elif which_one == 'some_configs':
-        # But if you wanted to configure, or change the underlying convention, you could!
-
-        configs = {
-            'dash.Dash': {
-                'name': "My Own Lil' name",
-            },
-            'add_app_attrs': {
-                'title': 'Lil'
-            }
-        }
-        convention = {}
-        app = dispatch_funcs(funcs, configs, convention)
-        app.run_server(debug=True)
+    # from py2dash.app_makers import dispatch_funcs
+    #
+    # configs = {}
+    # which_one = 'some_configs'
+    #
+    # if which_one == 'simple':
+    #     app = dispatch_funcs(funcs)
+    #     app.run_server(debug=True)
+    # elif which_one == 'some_configs':
+    #     # But if you wanted to configure, or change the underlying convention, you could!
+    #
+    #     configs = {
+    #         'dash.Dash': {
+    #             'name': "My Own Lil' name",
+    #         },
+    #         'add_app_attrs': {
+    #             'title': 'Lil'
+    #         }
+    #     }
+    #     convention = {}
+    #     app = dispatch_funcs(funcs, configs, convention)
+    #     app.run_server(debug=True)
