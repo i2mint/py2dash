@@ -1,8 +1,10 @@
 def foo(a: int = 0, b: int = 0, c=0):
+    """This is foo. It computes something"""
     return (a * b) + c
 
 
 def bar(x, greeting='hello'):
+    """bar greets it's input"""
     return f"{greeting} {x}"
 
 
