@@ -2,15 +2,25 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import flask
-from dash.dependencies import Output, Input
+from dash.dependencies import Output, Input, State
 
 from py2dash import component_makers as cm
 
 
-def dispatch_func_to_app(app, func):
+def dispatch_func_to_app(app, func, execute_on_change=False):
     func_mint = cm.dash_mint_for_func(func)
-    app.callback(Output(**func_mint['output_callback_spec']),
-                 list(map(lambda x: Input(**x), func_mint['input_callback_specs'])))(func)
+    output = Output(**func_mint['output_callback_spec'])
+
+    if execute_on_change:
+        arg_list = list(map(lambda x: Input(**x), func_mint['input_callback_specs']))
+        app.callback(output, arg_list)(func)
+    else:
+        arg_list = list(map(lambda x: State(**x), func_mint['input_callback_specs']))
+        def curried_func(n_clicks, *args, **kwargs):
+            return func(*args, **kwargs)
+        app.callback(output,
+                     [Input('submit-button', 'n_clicks')],
+                     arg_list)(curried_func)
 
 
 def dispatch_funcs_to_app(app, funcs):
@@ -117,6 +127,9 @@ def add_app_attrs(app, **kwargs):
     for k, v in kwargs.items():
         setattr(app, k, v)
 
+def mk_submit_button():
+    return html.Div(html.Button(id='submit-button', n_clicks=0, children='Execute'))
+
 
 def dispatch_funcs(funcs, configs=None, convention=None):
     from pprint import pprint
@@ -150,8 +163,11 @@ def dispatch_funcs(funcs, configs=None, convention=None):
     for func in funcs:
         func_mint = cm.dash_mint_for_func(func)
         url = url_for_func(func)
-        div_for_url[url] = html.Div(func_mint['input_divs'] + [func_mint['output_div']],
-                                    id=func_mint['func_id'])
+        func_children = func_mint['input_divs'] + [func_mint['output_div']]
+        if not configs.get('execute_on_change', False):
+            print('appending submit button')
+            func_children.append(mk_submit_button())
+        div_for_url[url] = html.Div(func_children, id=func_mint['func_id'])
         func_mint_for_url[url] = func_mint
 
     urls = list(div_for_url.keys())
@@ -168,7 +184,8 @@ def dispatch_funcs(funcs, configs=None, convention=None):
     def serve_layout():
         if flask.has_request_context():
             return div_for_url['url_bar_and_content_div']
-        return html.Div(list(div_for_url.values()))
+        element_list = list(div_for_url.values())
+        return html.Div(element_list)
 
     app.layout = serve_layout
 
