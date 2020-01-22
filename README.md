@@ -60,7 +60,7 @@ Convinced?
 
 # Example: Dispatching Sklearn
 
-The code below will allow the user to select any of the first 50 estimators of sklearn (), parametrize them, and save this in a local pickle file. This provides an example of how we can do a lot more, even with the basics, by decorating the functions 
+The code below will allow the user to select any of the first 50 estimators of [sklearn](https://scikit-learn.org/), parametrize them, and save this in a local pickle file. This provides an example of how we can do a lot more, even with the basics, by decorating the functions 
 we wish to dispatch.
 
 ```python
