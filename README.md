@@ -4,11 +4,11 @@ Experimental tools to get you from python functions to a browser based dashboard
 see these functions, select one, see the signature, enter the inputs, call the function, and see the results.
 
 At the time of writing this, it's only a proof of concept. 
-Still, it works perfectly if your functions only have simple types (or you wrapped them with input/output converting layers), and you're okay with the default choice of layout and output format.
+Still, it works perfectly if your functions only have simple types, and you're okay with the default choice of layout and output format. As far as the functions being simple, know that you can always rein a function down to compatibility using decorators (see [Example: Dispatching Sklearn](#Example: Dispatching Sklearn))
 
 Yet we obviously want to do more! We want to allow the user to use any function, simply by specifying how complex types should be handled (and doing so with minimal boilerplate). We want to allow a range of possible layouts, navigation structures and output presentations.
 
-# Example
+# Simple Example
 
 Consider the code below:
 
@@ -43,4 +43,55 @@ When you go to that url, you'll first see a list of the (clickable) function nam
 
 ![alt text](img/dash_home.png)
 
-Click on foo and you'll see `foo`'s name and signature. Enter a few numbers there, click execute,
+Click on foo and you'll see `foo`'s name and signature. Enter a few numbers there, click execute, and you get:
+
+![alt text](img/dash_foo.png)
+
+Yep. It's alive! Try it again, try it again. Click on `bar` and do something with it...
+
+![alt text](img/dash_bar.png)
+
+Again!
+
+![alt text](img/dash_confuser.png)
+
+Convinced?
+
+# Example: Dispatching Sklearn
+
+The code below will allow the user to select any of the first 50 estimators of sklearn (), parametrize them, and save this in a local pickle file. This provides an example of how we can do a lot more, even with the basics, by decorating the functions 
+we wish to dispatch.
+
+```python
+from sklearn.utils.testing import all_estimators  # a list of all 197 estimators sklearn offers
+from functools import wraps
+
+# make a decorator to save a pickle of the object created locally
+def pickle_output(func):
+    import os
+    import pickle
+    func_name = func.__name__
+    save_filepath = os.path.expanduser(f"~/{func_name}.p")
+
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        obj = func(*args, **kwargs)
+        pickle.dump(obj, open(save_filepath, 'wb'))
+        return f"{str(obj)} \n\nSaved here: {save_filepath}"
+
+    return wrapped
+
+
+output_decorator = pickle_output
+
+funcs = [output_decorator(x[1]) for x in all_estimators()[:50]]  # decorate the first 50 estimators
+
+if __name__ == '__main__':
+    from py2dash.app_makers import dispatch_funcs
+    app = dispatch_funcs(funcs)
+    app.run_server(debug=True)
+```
+
+Running this code, clicking on DBSCAN, for instance, and clicking on Execute saves a pickle file locally, under `~/DBSCAN.p`.
+
+![alt text](img/dash_dbscan.png)
