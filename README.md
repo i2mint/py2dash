@@ -43,4 +43,16 @@ When you go to that url, you'll first see a list of the (clickable) function nam
 
 ![alt text](img/dash_home.png)
 
-Click on foo and you'll see `foo`'s name and signature. Enter a few numbers there, click execute,
+Click on foo and you'll see `foo`'s name and signature. Enter a few numbers there, click execute, and you get:
+
+![alt text](img/dash_foo.png)
+
+Yep. It's alive! Try it again, try it again. Click on `bar` and do something with it...
+
+![alt text](img/dash_bar.png)
+
+Again!
+
+![alt text](img/dash_confuser.png)
+
+Convinced?
