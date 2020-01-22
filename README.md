@@ -41,19 +41,20 @@ When you call `app.run_server()` then, a server will launch and you'll be given 
 
 When you go to that url, you'll first see a list of the (clickable) function names.
 
-![alt text](img/dash_home.png)
+<img src="img/dash_home.png" width="20%">
 
 Click on foo and you'll see `foo`'s name and signature. Enter a few numbers there, click execute, and you get:
 
-![alt text](img/dash_foo.png)
+<img src="img/dash_foo.png" width="25%">
+
 
 Yep. It's alive! Try it again, try it again. Click on `bar` and do something with it...
 
-![alt text](img/dash_bar.png)
+<img src="img/dash_bar.png" width="25%">
 
 Again!
 
-![alt text](img/dash_confuser.png)
+<img src="img/dash_confuser.png" width="25%">
 
 Convinced?
 
@@ -94,4 +95,5 @@ if __name__ == '__main__':
 
 Running this code, clicking on DBSCAN, for instance, and clicking on Execute saves a pickle file locally, under `~/DBSCAN.p`.
 
-![alt text](img/dash_dbscan.png)
+<img src="img/dash_dbscan.png">
+
