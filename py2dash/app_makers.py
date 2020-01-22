@@ -165,7 +165,7 @@ def dispatch_funcs(funcs, configs=None, convention=None):
         url = url_for_func(func)
         func_children = func_mint['input_divs'] + [func_mint['output_div']]
         if not configs.get('execute_on_change', False):
-            print('appending submit button')
+            # print('appending submit button')
             func_children.append(mk_submit_button())
         div_for_url[url] = html.Div(func_children, id=func_mint['func_id'])
         func_mint_for_url[url] = func_mint

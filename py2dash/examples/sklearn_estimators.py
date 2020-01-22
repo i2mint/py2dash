@@ -26,10 +26,10 @@ def pickle_output(func):
 
 
 # choose here:
-# oputput_decorator = stringify_output
-oputput_decorator = pickle_output
+# output_decorator = stringify_output
+output_decorator = pickle_output
 
-funcs = [oputput_decorator(x[1]) for x in all_estimators()][:10]
+funcs = [output_decorator(x[1]) for x in all_estimators()[:50]]
 
 if __name__ == '__main__':
     from py2dash.app_makers import dispatch_funcs
