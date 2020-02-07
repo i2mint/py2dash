@@ -1,10 +1,13 @@
+import os
+
+
 def foo(a: int = 0, b: int = 0, c=0):
     """This is foo. It computes something"""
     return (a * b) + c
 
 
 def bar(x, greeting='hello'):
-    """bar greets it's input"""
+    """bar greets its input"""
     return f"{greeting} {x}"
 
 
@@ -16,8 +19,8 @@ funcs = [foo, bar, confuser]
 
 if __name__ == '__main__':
     from py2dash.app_makers import dispatch_funcs
-
-    app = dispatch_funcs(funcs)
+    print('file: {}'.format(os.path.realpath(__file__)))
+    app = dispatch_funcs(funcs, {'style': {'root_dir': os.path.dirname(os.path.realpath(__file__))}})
     app.run_server(debug=True)
 
     # from py2dash.app_makers import dispatch_funcs
