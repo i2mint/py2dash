@@ -1,0 +1,29 @@
+body {
+    background-color: #eef;
+}
+
+.function-list {
+    
+}
+
+.function-list > .nav-link {
+    font-size: 2em;
+}
+
+.function-input {
+    margin-bottom: 10px;
+}
+
+.function-input > label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.function-output {
+    margin-bottom: 10px;
+}
+
+.submit-button {
+    display: block;
+    margin-bottom: 10px;
+}

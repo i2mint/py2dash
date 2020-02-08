@@ -35,34 +35,30 @@ def navigate_to_path_text(path):
     return f'Navigate to path {path}'
 
 
-def mk_navigation_links_div_list(paths, link_str_for=navigate_to_path_text, sep_maker=hc.Br):
-    div_list = []
+def mk_navigation_links(paths, link_str_for=navigate_to_path_text, sep_maker=hc.Br):
+    element_list = []
     for path in paths:
-        div_list.extend([
-            dcc.Link(link_str_for(path), href=path),
-            sep_maker()
-        ])
-    div_list = div_list[:-1]  # remove the last sep
-    return div_list
+        element_list.append(hc.Div(dcc.Link(link_str_for(path), href=path), className="nav-link"))
+    return element_list
 
 
 def mk_layout_for_page(path, template_funcs):
     """
-    Make a div_list for a layout of a page by applying each template function of template_funcs to
+    Make an element_list for a layout of a page by applying each template function of template_funcs to
     the given path.
     :param path: input to the functions of template_funcs
     :param template_funcs: The template functions (should all take any valid input path and return an
         html component or list thereof)
     :return: A list (to be given to children of dash_html_components.Div)
     """
-    div_list = list()
+    element_list = list()
     for func in template_funcs:
         layout_component = func(path)
         if isinstance(layout_component, list):
-            div_list.extend(layout_component)
+            element_list.extend(layout_component)
         else:
-            div_list.append(layout_component)
-    return div_list
+            element_list.append(layout_component)
+    return element_list
 
 
 class Ddiv(hc.Div):
@@ -111,85 +107,85 @@ def input_type_from_arg_spec(sig):
     return input_type_for_py_obj(dflt_val)
 
 
-def labeled_div(_id, div_list, label=None):
+def labeled_div(_id, element_list, label=None):
     if label is None:
         label = _id
-    hc.Div([hc.Label(label), div_list])
+    hc.Div([hc.Label(label), element_list])
 
     # dropdown_from_list(Controller.list_learner_kinds(), id=ids.learner_kind)])
 
 
-def components_for_arg_spec(arg_spec, id_prefix=''):
-    divs = []
+def component_for_arg_spec(arg_spec, id_prefix=''):
+    children = []
     _id = id_prefix + '-' + arg_spec['name']
-    divs.append(hc.Label(arg_spec['name']))
+    children.append(hc.Label(arg_spec['name']))
     if arg_spec.get('default', None) is not None:
         value = arg_spec['default']
         # if isinstance(value, bool):  # TODO: Finish better handling of booleans
-        #     div_list.append(dcc.Checklist(id=_id))
+        #     element_list.append(dcc.Checklist(id=_id))
         if isinstance(value, bool) or not isinstance(value, (int, float, str)):
             value = str(value)
     else:
         value = ''
 
-    divs.append(dcc.Input(id=_id, value=value, type=input_type_from_arg_spec(arg_spec)))
-    return divs
+    children.append(dcc.Input(id=_id, value=value, type=input_type_from_arg_spec(arg_spec)))
+    return hc.Div(children, className="arg-container")
 
 
-def div_list_from_func(func):
+def element_list_from_func(func):
     """ TODO: Deprecate """
     arg_name_and_dflt = extract_name_and_default(func)
-    divs = list()
-    divs.append(hc.H3(func.__name__))
+    elements = list()
+    elements.append(hc.H3(func.__name__))
     for d in arg_name_and_dflt:
-        divs.extend(components_for_arg_spec(d, id_prefix=f"{func.__name__}"))
-    return divs
+        elements.append(component_for_arg_spec(d, id_prefix=f"{func.__name__}"))
+    return elements
 
 
 def dash_mint_for_arg(arg_spec, id_prefix=''):
-    divs = []
+    children = []
     _id = id_prefix + '-' + arg_spec['name']
-    divs.append(hc.Label(arg_spec['name']))
+    children.append(hc.Label(arg_spec['name']))
     if arg_spec.get('default', None) is not None:
         value = arg_spec['default']
         # if isinstance(value, bool):  # TODO: Finish better handling of booleans
-        #     div_list.append(dcc.Checklist(id=_id))
+        #     element_list.append(dcc.Checklist(id=_id))
         if isinstance(value, bool) or not isinstance(value, (int, float, str)):
             value = str(value)
-        divs.append(dcc.Input(id=_id, value=value, type=input_type_from_arg_spec(arg_spec)))
+        children.append(dcc.Input(id=_id, value=value, type=input_type_from_arg_spec(arg_spec)))
     else:
         value = ''
-        divs.append(dcc.Input(id=_id, type=input_type_from_arg_spec(arg_spec)))
+        children.append(dcc.Input(id=_id, type=input_type_from_arg_spec(arg_spec)))
 
     # divs.append(dcc.Input(id=_id, value=value, type=input_type_from_arg_spec(arg_spec)))
 
     mint = dict()
-    mint['layout_divs'] = divs
+    mint['layout_element'] = hc.Div(children, className="function-input")
     mint['input_callback_specs'] = {'component_id': _id, 'component_property': 'value'}
     return mint
 
 
 def dash_mint_for_func(func):
     arg_specs = extract_signature(func)
-    divs = list()
+    children = list()
     input_callback_specs = list()
     func_name = func.__name__
-    divs.append(hc.H3(func_name))
+    children.append(hc.H3(func_name))
     for arg_spec in arg_specs:
         arg_mint = dash_mint_for_arg(arg_spec, id_prefix=f"{func_name}")
-        divs.extend(arg_mint['layout_divs'])
+        children.append(arg_mint['layout_element'])
         input_callback_specs.append(arg_mint['input_callback_specs'])
-    func_id = f"{func_name}-div"
+    func_id = f"{func_name}-container"
     output_id = f"{func_name}-output"
     func_title_name = func_name[0].upper() + func_name[1:].lower()
-    output_div = hc.Div(id=output_id)
+    output_element = hc.Div(id=output_id, className="function-output")
     output_callback_spec = {'component_id': output_id, 'component_property': 'children'}
     return dict(func_id=func_id,
                 func_title_name=func_title_name,
-                input_divs=divs,
+                input_elements=children,
                 input_callback_specs=input_callback_specs,
                 output_callback_spec=output_callback_spec,
-                output_div=output_div)
+                output_element=output_element)
 
 
 def options_dict_from_list(options):
