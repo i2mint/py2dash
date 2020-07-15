@@ -103,7 +103,7 @@ dflt_convention = {
 }
 
 try:
-    from py2mint.chain_map import ChainMapTree
+    from i2.chain_map import ChainMapTree
 except ImportError:
     from warnings import warn
 
