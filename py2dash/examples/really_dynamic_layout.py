@@ -1,3 +1,5 @@
+"""Runs on dash==1.5.1"""
+
 import os
 
 
@@ -11,8 +13,8 @@ def bar(x, greeting='hello'):
     return f"{greeting} {x}"
 
 
-def confuser(a: int = 0, x: float = 3.14):
-    return (a ** 2) * x
+def confuser(a: int = 0, x: float = 3.14, pineapple='fruit'):
+    return int((a ** 2) * x) * pineapple
 
 
 funcs = [foo, bar, confuser]
