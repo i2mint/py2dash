@@ -105,7 +105,14 @@ def prepare_for_dispatch(func):
 
 
 if __name__ == "__main__":
-    from streamlitfront.base import dispatch_funcs
 
-    app = dispatch_funcs([prepare_for_dispatch(apply_model)])
-    app()
+    funcs = [prepare_for_dispatch(apply_model)]
+
+    import os
+    from py2dash.app_makers import dispatch_funcs
+
+    print("file: {}".format(os.path.realpath(__file__)))
+    app = dispatch_funcs(
+        funcs, {"style": {"root_dir": os.path.dirname(os.path.realpath(__file__))}}
+    )
+    app.run_server(debug=True)
