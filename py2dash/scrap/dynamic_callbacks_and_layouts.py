@@ -9,7 +9,7 @@ import sys, os, traceback
 import logging
 
 
-class baseApp(object):
+class baseApp:
     def __init__(self, app, server, name='App', title='Application', ctx='', loglevel=logging.ERROR, use_cache=False,
                  app_path='./data'):
         self.app = app
@@ -21,7 +21,7 @@ class baseApp(object):
         logging.basicConfig(filename=ctx + '.' + __name__ + '.' + self.__class__.__name__ + '.log', filemode='w',
                             level=loglevel, format='%(asctime)s %(levelname)s:%(message)s',
                             datefmt='%d/%m/%Y %H:%M:%S ')
-        self.logger.debug('init app, ctx:{ctx}'.format(ctx=self.ctx))
+        self.logger.debug(f'init app, ctx:{self.ctx}')
         self.store = {}
         if use_cache is True:
             self.init_cache()
@@ -46,10 +46,10 @@ class baseApp(object):
             ], className='container')], className='footer')
 
     def getComponentId(self, name):
-        return '{name}_{ctx}'.format(name=name, ctx=self.ctx)
+        return f'{name}_{self.ctx}'
 
     def register_callbacks(self, callbacks):
-        print('registering {} callbacks for {}'.format(len(callbacks), self.name))
+        print(f'registering {len(callbacks)} callbacks for {self.name}')
 
         for callback_data in callbacks:
             # self.logger.debug('%s] callback_data[0]: %s',self.ctx,callback_data[0])
@@ -63,8 +63,8 @@ class baseApp(object):
             self.app.callback(**callback_kwargs)(dynamically_generated_function)
 
     def print_exception(self, e, ctx, name, *params):
-        print('[{ctx}] Exception in {name} : {msg}'.format(ctx=ctx, name=name, msg=e))
-        print('[{ctx}] Exception parameters:'.format(ctx=ctx), *params)
+        print(f'[{ctx}] Exception in {name} : {e}')
+        print(f'[{ctx}] Exception parameters:', *params)
         exc_type, exc_obj, exc_tb = sys.exc_info()
         traceback.print_tb(exc_tb)
 

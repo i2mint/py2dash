@@ -8,7 +8,7 @@ from warnings import warn
 warn("This app doesn't fully work yet.")
 
 LRU_CACHE_SIZE = 10
-dropbox_dl_pattern = re.compile('(?<=[&\?])dl=\d+')
+dropbox_dl_pattern = re.compile(r'(?<=[&\?])dl=\d+')
 
 
 # example url to use: https://www.dropbox.com/s/qjar1syi9l15juz/Thor.csv?dl=0

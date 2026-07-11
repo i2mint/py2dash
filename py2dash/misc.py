@@ -3,7 +3,7 @@
 import pandas as pd
 import numpy as np
 import inspect
-from typing import Callable, Iterator
+from collections.abc import Callable, Iterator
 
 
 def module_classes(module):

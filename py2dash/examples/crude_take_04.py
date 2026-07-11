@@ -7,7 +7,8 @@ dispatchable function that uses a store (a Mapping) to manage complex data.
 # This is what we want our "dispatchable" wrapper to look like
 
 # There should be real physical stores for those types (FVs, FittedModel) that need them
-from typing import Any, Mapping, Tuple
+from typing import Any, Tuple
+from collections.abc import Mapping
 
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
@@ -111,7 +112,7 @@ if __name__ == "__main__":
     import os
     from py2dash.app_makers import dispatch_funcs
 
-    print("file: {}".format(os.path.realpath(__file__)))
+    print(f"file: {os.path.realpath(__file__)}")
     app = dispatch_funcs(
         funcs, {"style": {"root_dir": os.path.dirname(os.path.realpath(__file__))}}
     )

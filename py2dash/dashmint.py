@@ -79,7 +79,7 @@ def parse_type(type_string):
 
 
 split_specs_p = re.compile(';')
-p = re.compile('-\ (?P<argname>\w+) \((?P<specs>.+)\): (?P<description>.+)')
+p = re.compile(r'-\ (?P<argname>\w+) \((?P<specs>.+)\): (?P<description>.+)')
 
 
 def mint_lines(lines, warn_on_error=False):

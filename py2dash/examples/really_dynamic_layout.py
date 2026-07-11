@@ -21,7 +21,7 @@ funcs = [foo, bar, confuser]
 
 if __name__ == '__main__':
     from py2dash.app_makers import dispatch_funcs
-    print('file: {}'.format(os.path.realpath(__file__)))
+    print(f'file: {os.path.realpath(__file__)}')
     app = dispatch_funcs(funcs, {'style': {'root_dir': os.path.dirname(os.path.realpath(__file__))}})
     app.run_server(debug=True)
 

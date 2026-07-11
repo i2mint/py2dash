@@ -87,7 +87,7 @@ def update_output(n_clicks, input3, input1, input2):
               [Input('page-2-dropdown', 'value')])
 def display_value(value):
     print('display_value')
-    return 'You have selected "{}"'.format(value)
+    return f'You have selected "{value}"'
 
 
 if __name__ == '__main__':
