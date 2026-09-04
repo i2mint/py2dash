@@ -109,11 +109,3 @@ def dcore_plot_nonnull_counts_of_classes_signatures(figsize=(15, 30)):
 
 def hcore_plot_nonnull_counts_of_classes_signatures(figsize=(17, 25)):
     heatmap_of_module_classes_signatures(hcore, figsize=figsize)
-
-
-if __name__ == '__main__':
-    import argh
-
-    argh.dispatch_commands([heatmap_of_module_classes_signatures,
-                            plot_nonnull_counts_of_classes_signatures])
-
