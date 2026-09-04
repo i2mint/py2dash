@@ -1,11 +1,8 @@
 import inspect
 import os
 import pickle
-import argh
 
 home_dir = os.path.expanduser('~')
-
-dispatch_to_cli = argh.dispatch_command
 
 
 class Ids:
